@@ -92,15 +92,19 @@ import { FacilityService } from '../../../core/services/facility.service';
               <div>
                 <label class="block font-semibold text-slate-700">Facility *</label>
                 <select formControlName="facility" (change)="onFacilityChange()" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
-                  <option value="" disabled>-- Select Facility --</option>
-                  <option *ngFor="let f of facilities" [value]="f.id">{{ f.name }}</option>
+                  <option value="" disabled selected>-- Select Facility --</option>
+                  <option *ngFor="let facility of facilities" [value]="facility.id">
+                    {{ facility.name }}
+                  </option>
                 </select>
               </div>
               <div>
                 <label class="block font-semibold text-slate-700">Department *</label>
                 <select formControlName="department" (change)="onDepartmentChange()" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
-                  <option value="" disabled>-- Select Department --</option>
-                  <option *ngFor="let d of departments" [value]="d.id">{{ d.name }}</option>
+                  <option value="" disabled selected>-- Select Department --</option>
+                  <option *ngFor="let department of departments" [value]="department.id">
+                    {{ department.name }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -109,15 +113,19 @@ import { FacilityService } from '../../../core/services/facility.service';
               <div>
                 <label class="block font-semibold text-slate-700">Ward *</label>
                 <select formControlName="ward" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
-                  <option value="" disabled>-- Select Ward --</option>
-                  <option *ngFor="let w of wards" [value]="w.id">{{ w.name }}</option>
+                  <option value="" disabled selected>-- Select Ward --</option>
+                  <option *ngFor="let ward of wards" [value]="ward.id">
+                    {{ ward.name }}
+                  </option>
                 </select>
               </div>
               <div>
                 <label class="block font-semibold text-slate-700">Role *</label>
                 <select formControlName="role" (change)="onRoleChange()" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
-                  <option value="" disabled>-- Select Role --</option>
-                  <option *ngFor="let r of roles" [value]="r.id">{{ r.name }}</option>
+                  <option value="" disabled selected>-- Select Role --</option>
+                  <option *ngFor="let role of roles" [value]="role.id">
+                    {{ role.name }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -126,8 +134,10 @@ import { FacilityService } from '../../../core/services/facility.service';
               <div>
                 <label class="block font-semibold text-slate-700">Specialty *</label>
                 <select formControlName="specialty" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
-                  <option value="" disabled>-- Select Specialty --</option>
-                  <option *ngFor="let sp of specialties" [value]="sp.id">{{ sp.name }}</option>
+                  <option value="" disabled selected>-- Select Specialty --</option>
+                  <option *ngFor="let specialty of specialties" [value]="specialty.id">
+                    {{ specialty.name }}
+                  </option>
                 </select>
               </div>
               <div>
@@ -221,7 +231,7 @@ export class FacilityShiftsComponent implements OnInit {
   loadShifts() {
     this.shiftService.getShifts().subscribe({
       next: (res: any) => {
-        this.shifts = Array.isArray(res) ? res : (res?.results || []);
+        this.shifts = res?.results ? res.results : (Array.isArray(res) ? res : []);
       },
       error: (err) => {
         console.error('Failed to load shifts:', err);
@@ -231,16 +241,10 @@ export class FacilityShiftsComponent implements OnInit {
 
   loadDropdownData() {
     this.facilityService.getFacilities().subscribe({
-      next: (res: any) => {
-        this.facilities = Array.isArray(res) ? res : (res?.results || []);
-        if (this.facilities.length > 0) {
-          const currentFac = this.shiftForm.get('facility')?.value;
-          const exists = this.facilities.some(f => String(f.id) === String(currentFac));
-          if (!currentFac || !exists) {
-            this.shiftForm.patchValue({ facility: String(this.facilities[0].id) });
-            this.onFacilityChange();
-          }
-        }
+      next: (response: any) => {
+        console.log('FACILITIES RESPONSE', response);
+        this.facilities = response?.results ? response.results : (Array.isArray(response) ? response : []);
+        console.log('FACILITIES ARRAY', this.facilities);
       },
       error: (err) => {
         console.error('Failed to load facilities:', err);
@@ -248,16 +252,10 @@ export class FacilityShiftsComponent implements OnInit {
     });
 
     this.facilityService.getRoles().subscribe({
-      next: (res: any) => {
-        this.roles = Array.isArray(res) ? res : (res?.results || []);
-        if (this.roles.length > 0) {
-          const currentRole = this.shiftForm.get('role')?.value;
-          const exists = this.roles.some(r => String(r.id) === String(currentRole));
-          if (!currentRole || !exists) {
-            this.shiftForm.patchValue({ role: String(this.roles[0].id) });
-            this.onRoleChange();
-          }
-        }
+      next: (response: any) => {
+        console.log('ROLES RESPONSE', response);
+        this.roles = response?.results ? response.results : (Array.isArray(response) ? response : []);
+        console.log('ROLES', this.roles);
       },
       error: (err) => {
         console.error('Failed to load roles:', err);
@@ -266,82 +264,73 @@ export class FacilityShiftsComponent implements OnInit {
   }
 
   onFacilityChange() {
-    const fId = Number(this.shiftForm.get('facility')?.value);
-    if (!fId) {
-      this.departments = [];
-      this.wards = [];
-      this.shiftForm.patchValue({ department: '', ward: '' });
-      return;
+    const facilityId = Number(this.shiftForm.get('facility')?.value);
+    console.log('SELECTED FACILITY', facilityId);
+    this.departments = [];
+    this.wards = [];
+    this.shiftForm.patchValue({ department: '', ward: '' });
+
+    if (!facilityId) return;
+
+    const selectedFacility = this.facilities.find(f => Number(f.id) === facilityId);
+    if (selectedFacility && selectedFacility.departments && selectedFacility.departments.length > 0) {
+      this.departments = selectedFacility.departments;
+      console.log('DEPARTMENTS', this.departments);
+    } else {
+      this.facilityService.getDepartments(facilityId).subscribe({
+        next: (res: any) => {
+          this.departments = res?.results ? res.results : (Array.isArray(res) ? res : []);
+          console.log('DEPARTMENTS', this.departments);
+        },
+        error: (err) => console.error('Failed to load departments:', err)
+      });
     }
-    this.facilityService.getDepartments(fId).subscribe({
-      next: (res: any) => {
-        this.departments = Array.isArray(res) ? res : (res?.results || []);
-        if (this.departments.length > 0) {
-          this.shiftForm.patchValue({ department: String(this.departments[0].id) });
-          this.onDepartmentChange();
-        } else {
-          this.departments = [];
-          this.wards = [];
-          this.shiftForm.patchValue({ department: '', ward: '' });
-        }
-      },
-      error: (err) => {
-        console.error('Failed to load departments:', err);
-        this.departments = [];
-        this.wards = [];
-        this.shiftForm.patchValue({ department: '', ward: '' });
-      }
-    });
   }
 
   onDepartmentChange() {
-    const dId = Number(this.shiftForm.get('department')?.value);
-    if (!dId) {
-      this.wards = [];
-      this.shiftForm.patchValue({ ward: '' });
-      return;
+    const departmentId = Number(this.shiftForm.get('department')?.value);
+    console.log('SELECTED DEPARTMENT', departmentId);
+    this.wards = [];
+    this.shiftForm.patchValue({ ward: '' });
+
+    if (!departmentId) return;
+
+    const selectedDepartment = this.departments.find(d => Number(d.id) === departmentId);
+    if (selectedDepartment && selectedDepartment.wards && selectedDepartment.wards.length > 0) {
+      this.wards = selectedDepartment.wards;
+      console.log('WARDS', this.wards);
+    } else {
+      this.facilityService.getWards(departmentId).subscribe({
+        next: (res: any) => {
+          this.wards = res?.results ? res.results : (Array.isArray(res) ? res : []);
+          console.log('WARDS', this.wards);
+        },
+        error: (err) => console.error('Failed to load wards:', err)
+      });
     }
-    this.facilityService.getWards(dId).subscribe({
-      next: (res: any) => {
-        this.wards = Array.isArray(res) ? res : (res?.results || []);
-        if (this.wards.length > 0) {
-          this.shiftForm.patchValue({ ward: String(this.wards[0].id) });
-        } else {
-          this.wards = [];
-          this.shiftForm.patchValue({ ward: '' });
-        }
-      },
-      error: (err) => {
-        console.error('Failed to load wards:', err);
-        this.wards = [];
-        this.shiftForm.patchValue({ ward: '' });
-      }
-    });
   }
 
   onRoleChange() {
-    const rId = Number(this.shiftForm.get('role')?.value);
-    if (!rId) {
-      this.specialties = [];
-      this.shiftForm.patchValue({ specialty: '' });
-      return;
+    const roleId = Number(this.shiftForm.get('role')?.value);
+    console.log('SELECTED ROLE', roleId);
+    this.specialties = [];
+    this.shiftForm.patchValue({ specialty: '' });
+
+    if (!roleId) return;
+
+    const selectedRole = this.roles.find(r => Number(r.id) === roleId);
+    if (selectedRole && selectedRole.specialties && selectedRole.specialties.length > 0) {
+      this.specialties = selectedRole.specialties;
+      console.log('SPECIALTIES', this.specialties);
+    } else {
+      this.facilityService.getSpecialties(roleId).subscribe({
+        next: (res: any) => {
+          this.specialties = res?.results ? res.results : (Array.isArray(res) ? res : []);
+          console.log('SPECIALTIES', this.specialties);
+        },
+        error: (err) => console.error('Failed to load specialties:', err)
+      });
     }
-    this.facilityService.getSpecialties(rId).subscribe({
-      next: (res: any) => {
-        this.specialties = Array.isArray(res) ? res : (res?.results || []);
-        if (this.specialties.length > 0) {
-          this.shiftForm.patchValue({ specialty: String(this.specialties[0].id) });
-        } else {
-          this.specialties = [];
-          this.shiftForm.patchValue({ specialty: '' });
-        }
-      },
-      error: (err) => {
-        console.error('Failed to load specialties:', err);
-        this.specialties = [];
-        this.shiftForm.patchValue({ specialty: '' });
-      }
-    });
   }
 
   openCreateModal() {
@@ -349,22 +338,28 @@ export class FacilityShiftsComponent implements OnInit {
     this.successMessage = null;
     this.showModal = true;
 
-    // Set today's date by default if not set
-    if (!this.shiftForm.get('date')?.value) {
-      const today = new Date().toISOString().split('T')[0];
-      this.shiftForm.patchValue({
-        date: today,
-        start_time: '08:00',
-        end_time: '16:00',
-        required_workers: 1,
-        pay_rate: 35,
-        incentive: 0
-      });
-    }
+    // Reset form without pre-selecting options so user can select manually
+    this.shiftForm.reset({
+      facility: '',
+      department: '',
+      ward: '',
+      role: '',
+      specialty: '',
+      title: '',
+      date: new Date().toISOString().split('T')[0],
+      start_time: '08:00',
+      end_time: '16:00',
+      required_workers: 1,
+      pay_rate: 35,
+      incentive: 0
+    });
 
-    if (this.facilities.length === 0 || this.roles.length === 0) {
-      this.loadDropdownData();
-    }
+    this.departments = [];
+    this.wards = [];
+    this.specialties = [];
+
+    // Always fetch fresh dropdown data when opening modal
+    this.loadDropdownData();
   }
 
   closeCreateModal() {
