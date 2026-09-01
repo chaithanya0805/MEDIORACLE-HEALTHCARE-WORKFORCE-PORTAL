@@ -70,23 +70,36 @@ import { FacilityService } from '../../../core/services/facility.service';
 
       <!-- Create Shift Modal -->
       <div *ngIf="showModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-white border border-slate-200 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4">
+        <div class="bg-white border border-slate-200 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
           <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 class="text-lg font-bold text-slate-800">Create Staffing Shift</h3>
-            <button (click)="closeCreateModal()" class="text-slate-400 hover:text-slate-600 font-bold">×</button>
+            <button (click)="closeCreateModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl leading-none">×</button>
+          </div>
+
+          <!-- Alert Messages -->
+          <div *ngIf="errorMessage" class="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-start gap-2">
+            <span class="font-bold">⚠️</span>
+            <div class="whitespace-pre-line flex-1">{{ errorMessage }}</div>
+          </div>
+
+          <div *ngIf="successMessage" class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-xs flex items-center gap-2">
+            <span class="font-bold">✓</span>
+            <span class="flex-1">{{ successMessage }}</span>
           </div>
 
           <form [formGroup]="shiftForm" (ngSubmit)="onCreateSubmit()" class="space-y-4 text-sm">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block font-semibold text-slate-700">Facility</label>
+                <label class="block font-semibold text-slate-700">Facility *</label>
                 <select formControlName="facility" (change)="onFacilityChange()" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+                  <option value="" disabled>-- Select Facility --</option>
                   <option *ngFor="let f of facilities" [value]="f.id">{{ f.name }}</option>
                 </select>
               </div>
               <div>
-                <label class="block font-semibold text-slate-700">Department</label>
+                <label class="block font-semibold text-slate-700">Department *</label>
                 <select formControlName="department" (change)="onDepartmentChange()" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+                  <option value="" disabled>-- Select Department --</option>
                   <option *ngFor="let d of departments" [value]="d.id">{{ d.name }}</option>
                 </select>
               </div>
@@ -94,14 +107,16 @@ import { FacilityService } from '../../../core/services/facility.service';
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block font-semibold text-slate-700">Ward</label>
+                <label class="block font-semibold text-slate-700">Ward *</label>
                 <select formControlName="ward" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+                  <option value="" disabled>-- Select Ward --</option>
                   <option *ngFor="let w of wards" [value]="w.id">{{ w.name }}</option>
                 </select>
               </div>
               <div>
-                <label class="block font-semibold text-slate-700">Role</label>
+                <label class="block font-semibold text-slate-700">Role *</label>
                 <select formControlName="role" (change)="onRoleChange()" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+                  <option value="" disabled>-- Select Role --</option>
                   <option *ngFor="let r of roles" [value]="r.id">{{ r.name }}</option>
                 </select>
               </div>
@@ -109,50 +124,56 @@ import { FacilityService } from '../../../core/services/facility.service';
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block font-semibold text-slate-700">Specialty</label>
+                <label class="block font-semibold text-slate-700">Specialty *</label>
                 <select formControlName="specialty" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+                  <option value="" disabled>-- Select Specialty --</option>
                   <option *ngFor="let sp of specialties" [value]="sp.id">{{ sp.name }}</option>
                 </select>
               </div>
               <div>
-                <label class="block font-semibold text-slate-700">Title</label>
-                <input type="text" formControlName="title" required class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+                <label class="block font-semibold text-slate-700">Title *</label>
+                <input type="text" formControlName="title" placeholder="e.g. Registered Nurse Night Shift" required class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
               </div>
             </div>
 
             <div class="grid grid-cols-3 gap-4">
               <div>
-                <label class="block font-semibold text-slate-700">Date</label>
+                <label class="block font-semibold text-slate-700">Date *</label>
                 <input type="date" formControlName="date" required class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
               </div>
               <div>
-                <label class="block font-semibold text-slate-700">Start Time</label>
+                <label class="block font-semibold text-slate-700">Start Time *</label>
                 <input type="time" formControlName="start_time" required class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
               </div>
               <div>
-                <label class="block font-semibold text-slate-700">End Time</label>
+                <label class="block font-semibold text-slate-700">End Time *</label>
                 <input type="time" formControlName="end_time" required class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
               </div>
             </div>
 
             <div class="grid grid-cols-3 gap-4">
               <div>
-                <label class="block font-semibold text-slate-700">Required Workers</label>
-                <input type="number" formControlName="required_workers" required class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+                <label class="block font-semibold text-slate-700">Required Workers *</label>
+                <input type="number" formControlName="required_workers" min="1" required class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
               </div>
               <div>
-                <label class="block font-semibold text-slate-700">Pay Rate (€/hr)</label>
-                <input type="number" formControlName="pay_rate" required class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+                <label class="block font-semibold text-slate-700">Pay Rate (€/hr) *</label>
+                <input type="number" formControlName="pay_rate" min="10" step="0.5" required class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
               </div>
               <div>
                 <label class="block font-semibold text-slate-700">Incentive (€)</label>
-                <input type="number" formControlName="incentive" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
+                <input type="number" formControlName="incentive" min="0" step="1" class="mt-1 block w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl">
               </div>
             </div>
 
             <div class="flex justify-end gap-3 border-t border-slate-100 pt-3">
-              <button type="button" (click)="closeCreateModal()" class="px-4 py-2 border border-slate-200 rounded-xl hover:bg-slate-50">Cancel</button>
-              <button type="submit" [disabled]="shiftForm.invalid" class="px-4 py-2 bg-sky-500 text-white font-bold rounded-xl hover:bg-sky-600">Save Shift</button>
+              <button type="button" (click)="closeCreateModal()" [disabled]="isSubmitting" class="px-4 py-2 border border-slate-200 rounded-xl hover:bg-slate-50 disabled:opacity-50">
+                Cancel
+              </button>
+              <button type="submit" [disabled]="shiftForm.invalid || isSubmitting" class="px-4 py-2 bg-sky-500 text-white font-bold rounded-xl hover:bg-sky-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                <span *ngIf="isSubmitting" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                <span>{{ isSubmitting ? 'Saving Shift...' : 'Save Shift' }}</span>
+              </button>
             </div>
           </form>
         </div>
@@ -173,6 +194,10 @@ export class FacilityShiftsComponent implements OnInit {
   specialties: any[] = [];
 
   showModal = false;
+  isSubmitting = false;
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
+
   shiftForm = this.fb.group({
     facility: ['', Validators.required],
     department: ['', Validators.required],
@@ -181,10 +206,10 @@ export class FacilityShiftsComponent implements OnInit {
     specialty: ['', Validators.required],
     title: ['', Validators.required],
     date: ['', Validators.required],
-    start_time: ['', Validators.required],
-    end_time: ['', Validators.required],
+    start_time: ['08:00', Validators.required],
+    end_time: ['16:00', Validators.required],
     required_workers: [1, [Validators.required, Validators.min(1)]],
-    pay_rate: ['', [Validators.required, Validators.min(10)]],
+    pay_rate: [35, [Validators.required, Validators.min(10)]],
     incentive: [0]
   });
 
@@ -195,100 +220,291 @@ export class FacilityShiftsComponent implements OnInit {
 
   loadShifts() {
     this.shiftService.getShifts().subscribe({
-      next: (res) => this.shifts = res.results
+      next: (res: any) => {
+        this.shifts = Array.isArray(res) ? res : (res?.results || []);
+      },
+      error: (err) => {
+        console.error('Failed to load shifts:', err);
+      }
     });
   }
 
   loadDropdownData() {
     this.facilityService.getFacilities().subscribe({
-      next: (res) => {
-        this.facilities = res.results;
+      next: (res: any) => {
+        this.facilities = Array.isArray(res) ? res : (res?.results || []);
         if (this.facilities.length > 0) {
-          this.shiftForm.patchValue({ facility: this.facilities[0].id });
-          this.onFacilityChange();
+          const currentFac = this.shiftForm.get('facility')?.value;
+          const exists = this.facilities.some(f => String(f.id) === String(currentFac));
+          if (!currentFac || !exists) {
+            this.shiftForm.patchValue({ facility: String(this.facilities[0].id) });
+            this.onFacilityChange();
+          }
         }
+      },
+      error: (err) => {
+        console.error('Failed to load facilities:', err);
       }
     });
 
     this.facilityService.getRoles().subscribe({
-      next: (res) => {
-        this.roles = res.results;
+      next: (res: any) => {
+        this.roles = Array.isArray(res) ? res : (res?.results || []);
         if (this.roles.length > 0) {
-          this.shiftForm.patchValue({ role: this.roles[0].id });
-          this.onRoleChange();
+          const currentRole = this.shiftForm.get('role')?.value;
+          const exists = this.roles.some(r => String(r.id) === String(currentRole));
+          if (!currentRole || !exists) {
+            this.shiftForm.patchValue({ role: String(this.roles[0].id) });
+            this.onRoleChange();
+          }
         }
+      },
+      error: (err) => {
+        console.error('Failed to load roles:', err);
       }
     });
   }
 
   onFacilityChange() {
     const fId = Number(this.shiftForm.get('facility')?.value);
-    if (!fId) return;
+    if (!fId) {
+      this.departments = [];
+      this.wards = [];
+      this.shiftForm.patchValue({ department: '', ward: '' });
+      return;
+    }
     this.facilityService.getDepartments(fId).subscribe({
-      next: (res) => {
-        this.departments = res.results;
+      next: (res: any) => {
+        this.departments = Array.isArray(res) ? res : (res?.results || []);
         if (this.departments.length > 0) {
-          this.shiftForm.patchValue({ department: this.departments[0].id });
+          this.shiftForm.patchValue({ department: String(this.departments[0].id) });
           this.onDepartmentChange();
         } else {
           this.departments = [];
           this.wards = [];
+          this.shiftForm.patchValue({ department: '', ward: '' });
         }
+      },
+      error: (err) => {
+        console.error('Failed to load departments:', err);
+        this.departments = [];
+        this.wards = [];
+        this.shiftForm.patchValue({ department: '', ward: '' });
       }
     });
   }
 
   onDepartmentChange() {
     const dId = Number(this.shiftForm.get('department')?.value);
-    if (!dId) return;
+    if (!dId) {
+      this.wards = [];
+      this.shiftForm.patchValue({ ward: '' });
+      return;
+    }
     this.facilityService.getWards(dId).subscribe({
-      next: (res) => {
-        this.wards = res.results;
+      next: (res: any) => {
+        this.wards = Array.isArray(res) ? res : (res?.results || []);
         if (this.wards.length > 0) {
-          this.shiftForm.patchValue({ ward: this.wards[0].id });
+          this.shiftForm.patchValue({ ward: String(this.wards[0].id) });
         } else {
           this.wards = [];
+          this.shiftForm.patchValue({ ward: '' });
         }
+      },
+      error: (err) => {
+        console.error('Failed to load wards:', err);
+        this.wards = [];
+        this.shiftForm.patchValue({ ward: '' });
       }
     });
   }
 
   onRoleChange() {
     const rId = Number(this.shiftForm.get('role')?.value);
-    if (!rId) return;
+    if (!rId) {
+      this.specialties = [];
+      this.shiftForm.patchValue({ specialty: '' });
+      return;
+    }
     this.facilityService.getSpecialties(rId).subscribe({
-      next: (res) => {
-        this.specialties = res.results;
+      next: (res: any) => {
+        this.specialties = Array.isArray(res) ? res : (res?.results || []);
         if (this.specialties.length > 0) {
-          this.shiftForm.patchValue({ specialty: this.specialties[0].id });
+          this.shiftForm.patchValue({ specialty: String(this.specialties[0].id) });
         } else {
           this.specialties = [];
+          this.shiftForm.patchValue({ specialty: '' });
         }
+      },
+      error: (err) => {
+        console.error('Failed to load specialties:', err);
+        this.specialties = [];
+        this.shiftForm.patchValue({ specialty: '' });
       }
     });
   }
 
   openCreateModal() {
+    this.errorMessage = null;
+    this.successMessage = null;
     this.showModal = true;
+
+    // Set today's date by default if not set
+    if (!this.shiftForm.get('date')?.value) {
+      const today = new Date().toISOString().split('T')[0];
+      this.shiftForm.patchValue({
+        date: today,
+        start_time: '08:00',
+        end_time: '16:00',
+        required_workers: 1,
+        pay_rate: 35,
+        incentive: 0
+      });
+    }
+
+    if (this.facilities.length === 0 || this.roles.length === 0) {
+      this.loadDropdownData();
+    }
   }
 
   closeCreateModal() {
     this.showModal = false;
+    this.errorMessage = null;
+    this.successMessage = null;
+    this.isSubmitting = false;
+  }
+
+  formatDate(val: any): string {
+    if (!val) return '';
+    if (val instanceof Date) {
+      const y = val.getFullYear();
+      const m = String(val.getMonth() + 1).padStart(2, '0');
+      const d = String(val.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+    const str = String(val).trim();
+    if (str.includes('T')) {
+      return str.split('T')[0];
+    }
+    const dmyMatch = str.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+    if (dmyMatch) {
+      const [, d, m, y] = dmyMatch;
+      return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+    }
+    return str;
+  }
+
+  formatTime(val: any): string {
+    if (!val) return '08:00:00';
+    const str = String(val).trim();
+    if (/^\d{1,2}:\d{2}$/.test(str)) {
+      const [h, m] = str.split(':');
+      return `${h.padStart(2, '0')}:${m}:00`;
+    }
+    if (/^\d{1,2}:\d{2}:\d{2}$/.test(str)) {
+      const [h, m, s] = str.split(':');
+      return `${h.padStart(2, '0')}:${m}:${s}`;
+    }
+    return str;
   }
 
   onCreateSubmit() {
-    if (this.shiftForm.invalid) return;
-    this.shiftService.createShift(this.shiftForm.value).subscribe({
-      next: () => {
+    this.errorMessage = null;
+    this.successMessage = null;
+
+    if (this.shiftForm.invalid) {
+      this.shiftForm.markAllAsTouched();
+      const invalidControls: string[] = [];
+      Object.keys(this.shiftForm.controls).forEach(key => {
+        if (this.shiftForm.get(key)?.invalid) {
+          invalidControls.push(key);
+        }
+      });
+      this.errorMessage = `Please complete all required fields: ${invalidControls.join(', ')}`;
+      return;
+    }
+
+    const raw = this.shiftForm.value;
+    const facilityId = Number(raw.facility);
+    const departmentId = Number(raw.department);
+    const wardId = Number(raw.ward);
+    const roleId = Number(raw.role);
+    const specialtyId = Number(raw.specialty);
+
+    if (!facilityId || !departmentId || !wardId || !roleId || !specialtyId) {
+      this.errorMessage = 'Please ensure Facility, Department, Ward, Role, and Specialty are all selected.';
+      return;
+    }
+
+    const payload = {
+      facility: facilityId,
+      department: departmentId,
+      ward: wardId,
+      role: roleId,
+      specialty: specialtyId,
+      title: (raw.title || '').trim(),
+      date: this.formatDate(raw.date),
+      start_time: this.formatTime(raw.start_time),
+      end_time: this.formatTime(raw.end_time),
+      required_workers: Number(raw.required_workers) || 1,
+      pay_rate: Number(raw.pay_rate) || 0,
+      incentive: Number(raw.incentive) || 0
+    };
+
+    this.isSubmitting = true;
+    console.log('Sending Create Shift Payload:', payload);
+
+    this.shiftService.createShift(payload).subscribe({
+      next: (createdShift) => {
+        this.isSubmitting = false;
+        this.successMessage = 'Shift created successfully!';
+        console.log('Shift created successfully:', createdShift);
         this.loadShifts();
-        this.closeCreateModal();
+        setTimeout(() => {
+          this.closeCreateModal();
+        }, 600);
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        console.error('Create Shift API Error:', {
+          status: err.status,
+          statusText: err.statusText,
+          url: err.url,
+          error: err.error,
+          message: err.message
+        });
+
+        let msg = 'Failed to create shift.';
+        if (err.status === 401) {
+          msg = 'Authentication error (401): Session expired or unauthorized. Please log in again.';
+        } else if (err.status === 403) {
+          msg = 'Permission denied (403): You do not have permission to create shifts.';
+        } else if (err.status === 0) {
+          msg = 'Network / CORS error: Unable to reach https://medioracle-backend.onrender.com';
+        } else if (err.error) {
+          if (typeof err.error === 'string') {
+            msg = err.error;
+          } else if (typeof err.error === 'object') {
+            const fieldErrors = Object.entries(err.error)
+              .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
+              .join('\n');
+            msg = fieldErrors || JSON.stringify(err.error);
+          }
+        }
+        this.errorMessage = msg;
       }
     });
   }
 
   publishShift(id: number) {
     this.shiftService.publishShift(id).subscribe({
-      next: () => this.loadShifts()
+      next: () => {
+        this.loadShifts();
+      },
+      error: (err) => {
+        console.error('Failed to publish shift:', err);
+        alert(err?.error?.message || 'Failed to publish shift.');
+      }
     });
   }
 }

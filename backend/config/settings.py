@@ -10,7 +10,12 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = os.getenv('SECRET_KEY', 'change-this-development-secret-key')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')]
+ALLOWED_HOSTS = [
+    h.strip() for h in os.getenv(
+        'ALLOWED_HOSTS',
+        '127.0.0.1,localhost,medioracle-backend.onrender.com,.onrender.com'
+    ).split(',') if h.strip()
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -130,7 +135,14 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    o.strip() for o in os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:4200').split(',')
+    o.strip() for o in os.getenv(
+        'CORS_ALLOWED_ORIGINS',
+        'http://localhost:4200,http://127.0.0.1:4200,https://medioracle-healthcare-workforce-por.vercel.app'
+    ).split(',') if o.strip()
+]
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://medioracle-healthcare-workforce-por.*\.vercel\.app$",
+    r"^https://.*\.vercel\.app$",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
