@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from apps.accounts.permissions import IsFacilityAdmin
 from apps.accounts.models import Role
 from apps.facilities.models import Facility, Department, Ward, HealthcareRole, Specialty, Skill, StaffingRequirement
@@ -17,7 +17,7 @@ class FacilityViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             self.permission_classes = [IsFacilityAdmin]
         else:
-            self.permission_classes = [IsAuthenticated]
+            self.permission_classes = [AllowAny]
         return super().get_permissions()
 
     def get_queryset(self):
@@ -32,7 +32,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             self.permission_classes = [IsFacilityAdmin]
         else:
-            self.permission_classes = [IsAuthenticated]
+            self.permission_classes = [AllowAny]
         return super().get_permissions()
 
 class WardViewSet(viewsets.ModelViewSet):
@@ -44,24 +44,42 @@ class WardViewSet(viewsets.ModelViewSet):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             self.permission_classes = [IsFacilityAdmin]
         else:
-            self.permission_classes = [IsAuthenticated]
+            self.permission_classes = [AllowAny]
         return super().get_permissions()
 
 class HealthcareRoleViewSet(viewsets.ModelViewSet):
     queryset = HealthcareRole.objects.all()
     serializer_class = HealthcareRoleSerializer
-    permission_classes = [IsAuthenticated]
+    
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsFacilityAdmin]
+        else:
+            self.permission_classes = [AllowAny]
+        return super().get_permissions()
 
 class SpecialtyViewSet(viewsets.ModelViewSet):
     queryset = Specialty.objects.all()
     serializer_class = SpecialtySerializer
-    permission_classes = [IsAuthenticated]
     filterset_fields = ['role']
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsFacilityAdmin]
+        else:
+            self.permission_classes = [AllowAny]
+        return super().get_permissions()
 
 class SkillViewSet(viewsets.ModelViewSet):
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
-    permission_classes = [IsAuthenticated]
+    
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsFacilityAdmin]
+        else:
+            self.permission_classes = [AllowAny]
+        return super().get_permissions()
 
 class StaffingRequirementViewSet(viewsets.ModelViewSet):
     queryset = StaffingRequirement.objects.all()

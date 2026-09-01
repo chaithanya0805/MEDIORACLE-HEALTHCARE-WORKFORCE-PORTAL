@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface PaginatedResponse<T> {
   results: T[];
@@ -14,37 +15,37 @@ export interface PaginatedResponse<T> {
 })
 export class FacilityService {
   private http = inject(HttpClient);
-  private baseUrl = 'https://medioracle-backend.onrender.com/api/facilities';
+  private baseUrl = `${environment.apiUrl}/facilities`;
 
-  getFacilities(): Observable<PaginatedResponse<any>> {
-    return this.http.get<PaginatedResponse<any>>(`${this.baseUrl}/facilities/`);
+  getFacilities(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/facilities/`);
   }
 
-  getDepartments(facilityId?: number): Observable<PaginatedResponse<any>> {
+  getDepartments(facilityId?: number): Observable<any> {
     let params = new HttpParams();
     if (facilityId != null) {
       params = params.set('facility', facilityId.toString());
     }
-    return this.http.get<PaginatedResponse<any>>(`${this.baseUrl}/departments/`, { params });
+    return this.http.get<any>(`${this.baseUrl}/departments/`, { params });
   }
 
-  getWards(departmentId?: number): Observable<PaginatedResponse<any>> {
+  getWards(departmentId?: number): Observable<any> {
     let params = new HttpParams();
     if (departmentId != null) {
       params = params.set('department', departmentId.toString());
     }
-    return this.http.get<PaginatedResponse<any>>(`${this.baseUrl}/wards/`, { params });
+    return this.http.get<any>(`${this.baseUrl}/wards/`, { params });
   }
 
-  getRoles(): Observable<PaginatedResponse<any>> {
-    return this.http.get<PaginatedResponse<any>>(`${this.baseUrl}/roles/`);
+  getRoles(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/roles/`);
   }
 
-  getSpecialties(roleId?: number): Observable<PaginatedResponse<any>> {
+  getSpecialties(roleId?: number): Observable<any> {
     let params = new HttpParams();
     if (roleId != null) {
       params = params.set('role', roleId.toString());
     }
-    return this.http.get<PaginatedResponse<any>>(`${this.baseUrl}/specialties/`, { params });
+    return this.http.get<any>(`${this.baseUrl}/specialties/`, { params });
   }
 }

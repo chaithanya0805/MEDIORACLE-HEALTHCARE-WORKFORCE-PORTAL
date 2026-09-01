@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { BehaviorSubject, tap } from 'rxjs';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private baseUrl = 'https://medioracle-backend.onrender.com/api/auth';
+  private baseUrl = `${environment.apiUrl}/auth`;
   private userSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('user') || 'null'));
   user$ = this.userSubject.asObservable();
 

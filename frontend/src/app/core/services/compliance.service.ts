@@ -1,12 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComplianceService {
   private http = inject(HttpClient);
-  private baseUrl = 'https://medioracle-backend.onrender.com/api/compliance';
+  private baseUrl = `${environment.apiUrl}/compliance`;
 
   checkCompliance(professionalId: number, shiftId: number) {
     return this.http.post<any>(`${this.baseUrl}/check/`, {

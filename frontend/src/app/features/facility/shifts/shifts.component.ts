@@ -480,7 +480,7 @@ export class FacilityShiftsComponent implements OnInit {
         } else if (err.status === 403) {
           msg = 'Permission denied (403): You do not have permission to create shifts.';
         } else if (err.status === 0) {
-          msg = 'Network / CORS error: Unable to reach https://medioracle-backend.onrender.com';
+          msg = 'Network / CORS error: Unable to reach backend API.';
         } else if (err.error) {
           if (typeof err.error === 'string') {
             msg = err.error;

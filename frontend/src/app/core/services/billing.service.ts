@@ -1,12 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BillingService {
   private http = inject(HttpClient);
-  private baseUrl = 'https://medioracle-backend.onrender.com/api/billing';
+  private baseUrl = `${environment.apiUrl}/billing`;
 
   getInvoices(params?: any) {
     return this.http.get<any>(`${this.baseUrl}/invoices/`, { params });
