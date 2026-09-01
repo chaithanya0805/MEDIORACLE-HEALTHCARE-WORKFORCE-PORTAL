@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class TimekeepingService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8000/api/timekeeping/timesheets';
+  private baseUrl = 'https://medioracle-backend.onrender.com/api/timekeeping/timesheets';
 
   getTimesheets(params?: any) {
     return this.http.get<any>(`${this.baseUrl}/`, { params });

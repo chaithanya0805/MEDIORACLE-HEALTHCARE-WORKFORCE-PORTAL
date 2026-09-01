@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class BillingService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8000/api/billing';
+  private baseUrl = 'https://medioracle-backend.onrender.com/api/billing';
 
   getInvoices(params?: any) {
     return this.http.get<any>(`${this.baseUrl}/invoices/`, { params });

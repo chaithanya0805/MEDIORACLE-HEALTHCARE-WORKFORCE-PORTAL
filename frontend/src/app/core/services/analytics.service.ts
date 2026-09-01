@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AnalyticsService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8000/api/analytics';
+  private baseUrl = 'https://medioracle-backend.onrender.com/api/analytics';
 
   getFacilityAnalytics() {
     return this.http.get<any>(`${this.baseUrl}/facility/`);

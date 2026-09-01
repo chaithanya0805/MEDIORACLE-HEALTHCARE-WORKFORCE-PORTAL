@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class MatchingService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8000/api/matches';
+  private baseUrl = 'https://medioracle-backend.onrender.com/api/matches';
 
   getShiftMatches(shiftId: number) {
     return this.http.get<any>(`${this.baseUrl}/shift/${shiftId}/`);

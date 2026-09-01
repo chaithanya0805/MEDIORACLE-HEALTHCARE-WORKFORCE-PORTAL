@@ -14,7 +14,7 @@ export interface PaginatedResponse<T> {
 })
 export class FacilityService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8000/api/facilities';
+  private baseUrl = 'https://medioracle-backend.onrender.com/api/facilities';
 
   getFacilities(): Observable<PaginatedResponse<any>> {
     return this.http.get<PaginatedResponse<any>>(`${this.baseUrl}/facilities/`);

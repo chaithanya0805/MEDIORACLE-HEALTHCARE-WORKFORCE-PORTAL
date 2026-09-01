@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ShiftService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8000/api/shifts';
+  private baseUrl = 'https://medioracle-backend.onrender.com/api/shifts';
 
   getShifts(params?: any) {
     return this.http.get<any>(`${this.baseUrl}/shifts/`, { params });

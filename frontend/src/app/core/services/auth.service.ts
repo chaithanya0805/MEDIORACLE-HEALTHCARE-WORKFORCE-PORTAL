@@ -9,8 +9,7 @@ import { BehaviorSubject, tap } from 'rxjs';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private baseUrl = 'http://localhost:8000/api/auth';
-
+  private baseUrl = 'https://medioracle-backend.onrender.com/api/auth';
   private userSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('user') || 'null'));
   user$ = this.userSubject.asObservable();
 

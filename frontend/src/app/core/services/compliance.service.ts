@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ComplianceService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8000/api/compliance';
+  private baseUrl = 'https://medioracle-backend.onrender.com/api/compliance';
 
   checkCompliance(professionalId: number, shiftId: number) {
     return this.http.post<any>(`${this.baseUrl}/check/`, {
